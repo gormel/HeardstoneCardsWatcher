@@ -1,0 +1,74 @@
+﻿<Window x:Class="CardsWatcherWpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:cardsWatcherWpf="clr-namespace:CardsWatcherWpf"
+        Title="MainWindow" Height="931.915" Width="525">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="100" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+        
+        <Grid Name="mTopGrid" Grid.Row="0" Grid.Column="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Row="0" Grid.Column="0">
+                <TextBlock HorizontalAlignment="Center">Owner</TextBlock>
+                <CheckBox IsChecked="{Binding OwnerFriendly}">Friendly</CheckBox>
+                <CheckBox IsChecked="{Binding OwnerOpposing}">Opposing</CheckBox>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <TextBlock HorizontalAlignment="Center">Zone</TextBlock>
+                <CheckBox IsChecked="{Binding ZoneDeck}">Deck</CheckBox>
+                <CheckBox IsChecked="{Binding ZoneHand}">Hand</CheckBox>
+                <CheckBox IsChecked="{Binding ZonePlay}">Play</CheckBox>
+                <CheckBox IsChecked="{Binding ZoneGrav}">Graveyard</CheckBox>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="2">
+                <TextBlock HorizontalAlignment="Center">Type</TextBlock>
+                <CheckBox IsChecked="{Binding TypeSpell}">Spell</CheckBox>
+                <CheckBox IsChecked="{Binding TypeMinion}">Minion</CheckBox>
+                <CheckBox IsChecked="{Binding TypeWeapon}">Weapon</CheckBox>
+            </StackPanel>
+        </Grid>
+        
+        <ListBox Name="mListBox" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding FilteredInfos}">
+            <ListBox.Resources>
+                <cardsWatcherWpf:ImageConverter x:Key="ImageConverter" />
+            </ListBox.Resources>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}">
+                        <TextBlock.ToolTip>
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Owner}"/>
+                                    <TextBlock>&#160;</TextBlock>
+                                    <TextBlock Text="{Binding Zone}" />
+                                    <TextBlock>&#160;</TextBlock>
+                                    <TextBlock Text="{Binding Type}" />
+                                </StackPanel>
+                                <Image Source="{Binding Image, Converter={StaticResource ImageConverter}}"></Image>
+                            </StackPanel>
+                        </TextBlock.ToolTip>
+                    </TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="50"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Name="TextBlock" HorizontalAlignment="Center" Text="{Binding Count}" />
+            <Button Grid.Column="1" Click="ButtonBase_OnClick">Clear</Button>
+        </Grid>
+    </Grid>
+</Window>

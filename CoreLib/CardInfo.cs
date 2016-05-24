@@ -19,8 +19,9 @@ namespace CoreLib
 		private string type;
 		private string zone;
 		private string owner;
+	    private string text;
 
-		public Guid ID { get; private set; }
+	    public Guid ID { get; private set; }
 
 		public string Name
 		{
@@ -52,7 +53,13 @@ namespace CoreLib
 			set { owner = value; OnPropertyChanged(); }
 		}
 
-		public CardInfo(string cardName)
+	    public string Text
+	    {
+	        get { return text; }
+	        set { text = value; OnPropertyChanged(); }
+	    }
+
+	    public CardInfo(string cardName)
 		{
 			ID = Guid.NewGuid();
 			Name = cardName;
@@ -81,6 +88,8 @@ namespace CoreLib
 				if (cardInfo == null)
 					return false;
 				Type = cardInfo.type;
+			    Text = cardInfo.text ?? "";
+
 				string imageUrl = cardInfo.img;
 				var imgData = await client.GetByteArrayAsync(imageUrl);
 

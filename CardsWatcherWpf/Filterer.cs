@@ -1,5 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Data;
 using CoreLib;
@@ -17,9 +19,7 @@ namespace CardsWatcherWpf
 		private bool zonePlay = true;
 		private bool zoneGrav = true;
 
-		private bool typeSpell = true;
-		private bool typeMinion = true;
-		private bool typeWeapon = true;
+	    private string filterString = "";
 
 		public ListCollectionView FilteredInfos { get; private set; }
 
@@ -85,35 +85,15 @@ namespace CardsWatcherWpf
 			}
 		}
 
-		public bool TypeSpell
-		{
-			get { return typeSpell; }
-			set
-			{
-				typeSpell = value;
-				FilteredInfos.Refresh();
-			}
-		}
-
-		public bool TypeMinion
-		{
-			get { return typeMinion; }
-			set
-			{
-				typeMinion = value;
-				FilteredInfos.Refresh();
-			}
-		}
-
-		public bool TypeWeapon
-		{
-			get { return typeWeapon; }
-			set
-			{
-				typeWeapon = value;
-				FilteredInfos.Refresh();
-			}
-		}
+	    public string FilterString
+	    {
+	        get { return filterString; }
+	        set
+	        {
+	            filterString = value;
+	            FilteredInfos.Refresh();
+	        }
+	    }
 
 		#endregion
 
@@ -126,7 +106,7 @@ namespace CardsWatcherWpf
 			{
 				FilteredInfos.LiveFilteringProperties.Add(prop.Name);
 			}
-			FilteredInfos.Filter = o => FilterOwner(o as CardInfo) && FilterZone(o as CardInfo) && FilterType(o as CardInfo);
+			FilteredInfos.Filter = o => FilterOwner(o as CardInfo) && FilterZone(o as CardInfo) && FilterByString(o as CardInfo);
 		}
 
 		#region Filters
@@ -160,19 +140,24 @@ namespace CardsWatcherWpf
 			return false;
 		}
 
-		private bool FilterType(CardInfo info)
-		{
-			if (TypeSpell && info.Type == "Spell")
-				return true;
+	    private bool FilterByString(CardInfo info)
+	    {
+	        if (string.IsNullOrEmpty(FilterString))
+	            return true;
 
-			if (TypeMinion && info.Type == "Minion")
-				return true;
+	        var keywords = FilterString.Split(new[] {" ", "\t"}, StringSplitOptions.RemoveEmptyEntries).Select(s => s.ToLower()).ToArray();
 
-			if (TypeWeapon && info.Type == "Weapon")
-				return true;
+	        if (keywords.Any(s => info.Name.ToLower().Contains(s)))
+	            return true;
 
-			return false;
-		}
+	        if (keywords.Any(s => info.Type.ToLower().Contains(s)))
+	            return true;
+
+	        if (keywords.Any(s => info.Text.ToLower().Contains(s)))
+	            return true;
+
+	        return false;
+	    }
 
 		#endregion
 

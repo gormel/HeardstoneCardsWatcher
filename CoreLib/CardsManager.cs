@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -10,12 +11,24 @@ namespace CoreLib
 {
 	public class CardsManager
 	{
-		private readonly ObservableCollection<CardInfo> mInfos = new ObservableCollection<CardInfo>();
+	    public ObservableCollection<CardInfo> Infos { get; } = new ObservableCollection<CardInfo>();
 
-		public ObservableCollection<CardInfo> Infos { get { return mInfos; } } 
-
-		public CardsManager()
+	    public CardsManager()
 		{
+		    var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
+		    var configFile = new FileInfo($@"{localAppData}\Blizzard\Hearthstone\log.config");
+		    if (!configFile.Exists)
+		    {
+                using (var stream = configFile.Create())
+                using (var sw = new StreamWriter(stream))
+                {
+                    sw.WriteLine("[Zone]");
+                    sw.WriteLine("LogLevel=1");
+                    sw.WriteLine("FilePrinting=false");
+                    sw.WriteLine("ConsolePrinting=true");
+                    sw.WriteLine("ScreenPrinting=false");
+                }
+		    }
 			var mWather = new NormalFileSystemWatcher(@"C:\Games\Hearthstone\Hearthstone_Data\output_log.txt");
 			mWather.FileChanged += mWather_FileChanged;
 			mWather.Exception += mWather_Exception;
@@ -45,7 +58,7 @@ namespace CoreLib
 			CardInfo info = null;
 
 			if (!string.IsNullOrEmpty(inst.From))
-				info = mInfos.FirstOrDefault(i => i.Name == inst.Name && inst.From.StartsWith(i.Owner) && inst.From.EndsWith(i.Zone));
+				info = Infos.FirstOrDefault(i => i.Name == inst.Name && inst.From.StartsWith(i.Owner) && inst.From.EndsWith(i.Zone));
 
 			if (info == null)
 			{
@@ -62,7 +75,7 @@ namespace CoreLib
 					info.Owner = "";
 					info.Zone = "";
 				}
-				mInfos.Add(info);
+				Infos.Add(info);
 			}
 
 			if (!string.IsNullOrEmpty(inst.To))
@@ -74,7 +87,7 @@ namespace CoreLib
 			{
 				info.Owner = "";
 				info.Zone = "";
-				mInfos.Remove(info);
+				Infos.Remove(info);
 			}
 		}
 	}

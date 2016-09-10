@@ -14,49 +14,56 @@ namespace CoreLib
 {
 	public class CardInfo : INotifyPropertyChanged
 	{
-		private string name;
-		private Image image;
-		private string type;
-		private string zone;
-		private string owner;
-	    private string text;
+		private string mName;
+		private Image mImage;
+		private string mType;
+		private string mZone;
+		private string mOwner;
+	    private string mText;
+	    private int mCost;
 
 	    public Guid ID { get; private set; }
 
 		public string Name
 		{
-			get { return name; }
-			private set { name = value; OnPropertyChanged(); }
+			get { return mName; }
+			private set { mName = value; OnPropertyChanged(); }
 		}
 
 		public Image Image
 		{
-			get { return image; }
-			private set { image = value; OnPropertyChanged(); }
+			get { return mImage; }
+			private set { mImage = value; OnPropertyChanged(); }
 		}
 
 		public string Type
 		{
-			get { return type; }
-			private set { type = value; OnPropertyChanged(); }
+			get { return mType; }
+			private set { mType = value; OnPropertyChanged(); }
 		}
 
 		public string Zone
 		{
-			get { return zone; }
-			set { zone = value; OnPropertyChanged(); }
+			get { return mZone; }
+			set { mZone = value; OnPropertyChanged(); }
 		}
 
 		public string Owner
 		{
-			get { return owner; }
-			set { owner = value; OnPropertyChanged(); }
+			get { return mOwner; }
+			set { mOwner = value; OnPropertyChanged(); }
 		}
 
 	    public string Text
 	    {
-	        get { return text; }
-	        set { text = value; OnPropertyChanged(); }
+	        get { return mText; }
+	        set { mText = value; OnPropertyChanged(); }
+	    }
+
+	    public int Cost
+	    {
+	        get { return mCost; }
+	        set { mCost = value; OnPropertyChanged(); }
 	    }
 
 	    public CardInfo(string cardName)
@@ -89,6 +96,7 @@ namespace CoreLib
 					return false;
 				Type = cardInfo.type;
 			    Text = cardInfo.text ?? "";
+			    Cost = (int)cardInfo.cost;
 
 				string imageUrl = cardInfo.img;
 				var imgData = await client.GetByteArrayAsync(imageUrl);
@@ -112,8 +120,7 @@ namespace CoreLib
 		[NotifyPropertyChangedInvocator]
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
-			var handler = PropertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-		}
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 	}
 }

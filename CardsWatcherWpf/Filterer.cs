@@ -107,6 +107,7 @@ namespace CardsWatcherWpf
 				FilteredInfos.LiveFilteringProperties.Add(prop.Name);
 			}
 			FilteredInfos.Filter = o => FilterOwner(o as CardInfo) && FilterZone(o as CardInfo) && FilterByString(o as CardInfo);
+            FilteredInfos.SortDescriptions.Add(new SortDescription(nameof(CardInfo.Cost), ListSortDirection.Ascending));
 		}
 
 		#region Filters
@@ -166,8 +167,7 @@ namespace CardsWatcherWpf
 		[NotifyPropertyChangedInvocator]
 		protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
 		{
-			var handler = PropertyChanged;
-			if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-		}
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 	}
 }

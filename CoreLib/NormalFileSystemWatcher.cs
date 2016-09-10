@@ -28,9 +28,8 @@ namespace CoreLib
 			{
 				if (t.IsFaulted)
 				{
-					if (Exception != null)
-						Exception(t.Exception);
-				}
+                    Exception?.Invoke(t.Exception);
+                }
 			});
 		}
 
@@ -42,8 +41,7 @@ namespace CoreLib
 				var str = await WatchingCycleBody();
 				if (!string.IsNullOrEmpty(str))
 				{
-					if (FileChanged != null)
-						FileChanged(str);
+				    FileChanged?.Invoke(str);
 				}
 			}
 		}

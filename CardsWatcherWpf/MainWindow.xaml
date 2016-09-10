@@ -47,20 +47,33 @@
             </ListBox.Resources>
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Name}">
-                        <TextBlock.ToolTip>
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Owner}"/>
-                                    <TextBlock>&#160;</TextBlock>
-                                    <TextBlock Text="{Binding Zone}" />
-                                    <TextBlock>&#160;</TextBlock>
-                                    <TextBlock Text="{Binding Type}" />
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid>
+                            <Image Source="Resources/crystal.jpg" />
+                            <TextBlock Foreground="Black" FontSize="17" FontWeight="Bold" FontFamily="Belwe" TextAlignment="Center"
+                                       FontStyle="Italic" FontStretch="Condensed" Text="{Binding Cost}"/>
+                            <TextBlock Foreground="White" FontSize="15" FontWeight="Bold" FontFamily="Belwe" TextAlignment="Center"
+                                       FontStyle="Italic" FontStretch="Condensed" Text="{Binding Cost}"/>
+                        </Grid>
+                        <TextBlock Text="{Binding Name}" Grid.Column="1">
+                            <TextBlock.ToolTip>
+                                <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding Owner}"/>
+                                        <TextBlock>&#160;</TextBlock>
+                                        <TextBlock Text="{Binding Zone}" />
+                                        <TextBlock>&#160;</TextBlock>
+                                        <TextBlock Text="{Binding Type}" />
+                                    </StackPanel>
+                                    <Image Source="{Binding Image, Converter={StaticResource ImageConverter}}"></Image>
                                 </StackPanel>
-                                <Image Source="{Binding Image, Converter={StaticResource ImageConverter}}"></Image>
-                            </StackPanel>
-                        </TextBlock.ToolTip>
-                    </TextBlock>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

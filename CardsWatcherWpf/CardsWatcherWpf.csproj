@@ -62,6 +62,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CostToImageConverter.cs" />
     <Compile Include="ImageConverter.cs" />
     <Compile Include="Filterer.cs" />
     <Compile Include="Images.Designer.cs">
@@ -113,6 +114,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\HS.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\crystal.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

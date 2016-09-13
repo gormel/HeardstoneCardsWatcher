@@ -62,7 +62,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="CostToImageConverter.cs" />
     <Compile Include="ImageConverter.cs" />
     <Compile Include="Filterer.cs" />
     <Compile Include="Images.Designer.cs">

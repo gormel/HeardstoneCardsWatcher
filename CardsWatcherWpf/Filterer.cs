@@ -11,15 +11,15 @@ namespace CardsWatcherWpf
 {
 	public class Filterer : INotifyPropertyChanged
 	{
-		private bool ownerFriendly = true;
-		private bool ownerOpposing = true;
+		private bool mOwnerFriendly = true;
+		private bool mOwnerOpposing = true;
 
-		private bool zoneDeck = true;
-		private bool zoneHand = true;
-		private bool zonePlay = true;
-		private bool zoneGrav = true;
+		private bool mZoneDeck = true;
+		private bool mZoneHand = true;
+		private bool mZonePlay = true;
+		private bool mZoneGrav = true;
 
-	    private string filterString = "";
+	    private string mFilterString = "";
 
 		public ListCollectionView FilteredInfos { get; private set; }
 
@@ -27,70 +27,70 @@ namespace CardsWatcherWpf
 
 		public bool OwnerFriendly
 		{
-			get { return ownerFriendly; }
+			get { return mOwnerFriendly; }
 			set
 			{
-				ownerFriendly = value;
+				mOwnerFriendly = value;
 				FilteredInfos.Refresh();
 			}
 		}
 
 		public bool OwnerOpposing
 		{
-			get { return ownerOpposing; }
+			get { return mOwnerOpposing; }
 			set
 			{
-				ownerOpposing = value;
+				mOwnerOpposing = value;
 				FilteredInfos.Refresh();
 			}
 		}
 
 		public bool ZoneDeck
 		{
-			get { return zoneDeck; }
+			get { return mZoneDeck; }
 			set
 			{
-				zoneDeck = value;
+				mZoneDeck = value;
 				FilteredInfos.Refresh();
 			}
 		}
 
 		public bool ZoneHand
 		{
-			get { return zoneHand; }
+			get { return mZoneHand; }
 			set
 			{
-				zoneHand = value;
+				mZoneHand = value;
 				FilteredInfos.Refresh();
 			}
 		}
 
 		public bool ZonePlay
 		{
-			get { return zonePlay; }
+			get { return mZonePlay; }
 			set
 			{
-				zonePlay = value;
+				mZonePlay = value;
 				FilteredInfos.Refresh();
 			}
 		}
 
 		public bool ZoneGrav
 		{
-			get { return zoneGrav; }
+			get { return mZoneGrav; }
 			set
 			{
-				zoneGrav = value;
+				mZoneGrav = value;
 				FilteredInfos.Refresh();
 			}
 		}
 
 	    public string FilterString
 	    {
-	        get { return filterString; }
+	        get { return mFilterString; }
 	        set
 	        {
-	            filterString = value;
+	            mFilterString = value;
 	            FilteredInfos.Refresh();
 	        }
 	    }
@@ -100,7 +100,7 @@ namespace CardsWatcherWpf
 
 		public Filterer(ObservableCollection<CardInfo> infos)
 		{
-			FilteredInfos = CollectionViewSource.GetDefaultView(infos) as ListCollectionView;
+			FilteredInfos = (ListCollectionView)CollectionViewSource.GetDefaultView(infos);
 			FilteredInfos.IsLiveFiltering = true;
 			foreach (var prop in typeof(CardInfo).GetProperties())
 			{

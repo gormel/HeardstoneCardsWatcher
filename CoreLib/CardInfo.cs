@@ -9,11 +9,14 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CoreLib.Annotations;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace CoreLib
 {
 	public class CardInfo : INotifyPropertyChanged
 	{
+	    private const string HeroPowerType = "Hero Power";
+
 		private string mName;
 		private Image mImage;
 		private string mType;
@@ -91,12 +94,14 @@ namespace CoreLib
 				var stringResult = await result.Content.ReadAsStringAsync();
 
 				var jsonResult = JsonConvert.DeserializeObject(stringResult);
-				var cardInfo = ((IEnumerable<dynamic>)jsonResult).FirstOrDefault(c => c.name == Name /*&& c.collectible != null && (bool)c.collectible*/);
+				var cardInfo = ((IEnumerable<dynamic>)jsonResult).FirstOrDefault(c => c.name== Name);
 				if (cardInfo == null)
 					return false;
 				Type = cardInfo.type;
+			    if (Type == HeroPowerType)
+			        return false;
 			    Text = cardInfo.text ?? "";
-			    Cost = (int)cardInfo.cost;
+			    Cost = cardInfo.cost;
 
 				string imageUrl = cardInfo.img;
 				var imgData = await client.GetByteArrayAsync(imageUrl);

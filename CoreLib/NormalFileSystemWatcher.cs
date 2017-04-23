@@ -24,13 +24,7 @@ namespace CoreLib
 			mLastAccessTime = fileInfo.LastWriteTime;
 			mLastFileLength = fileInfo.Length;
 
-			WatchingCycle().ContinueWith(t =>
-			{
-				if (t.IsFaulted)
-				{
-                    Exception?.Invoke(t.Exception);
-                }
-			});
+			WatchingCycle().ContinueWith(WatchingCycleContination);
 		}
 
 		private async Task WatchingCycle()
@@ -46,7 +40,20 @@ namespace CoreLib
 			}
 		}
 
-		private async Task<string> WatchingCycleBody()
+	    private async void WatchingCycleContination(Task t)
+        {
+            if (t.IsFaulted)
+            {
+                Exception?.Invoke(t.Exception);
+            }
+
+	        await Task.Delay(1000);
+
+	        var tt = WatchingCycle().ContinueWith(WatchingCycleContination);
+        }
+
+
+        private async Task<string> WatchingCycleBody()
 		{
 			await Task.Yield();
 			var fileInfo = new FileInfo(File);

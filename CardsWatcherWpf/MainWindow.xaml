@@ -3,7 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:cardsWatcherWpf="clr-namespace:CardsWatcherWpf"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:coreLib="clr-namespace:CoreLib;assembly=CoreLib"
+        mc:Ignorable="d"
         Title="MainWindow" Height="931.915" Width="525"
         Icon="Resources/HS.png">
     <Grid>
@@ -13,7 +15,8 @@
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
         
-        <Grid Name="mTopGrid" Grid.Row="0" Grid.Column="0">
+        <Grid Name="mTopGrid" Grid.Row="0" Grid.Column="0" 
+              d:DataContext="{Binding Source={d:DesignInstance cardsWatcherWpf:Filterer}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="5*"/>
                 <RowDefinition Height="*"/>
@@ -41,12 +44,13 @@
             <TextBox Grid.Row="1" Text="{Binding Path=FilterString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         </Grid>
         
-        <ListBox Name="mListBox" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding FilteredInfos}">
+        <ListBox Name="mListBox" Grid.Column="0" Grid.Row="1" ItemsSource="{Binding FilteredInfos}"
+                 d:DataContext="{Binding Source={d:DesignInstance cardsWatcherWpf:Filterer}}">
             <ListBox.Resources>
                 <cardsWatcherWpf:ImageConverter x:Key="ImageConverter" />
             </ListBox.Resources>
             <ListBox.ItemTemplate>
-                <DataTemplate>
+                <DataTemplate DataType="{x:Type coreLib:CardInfo}">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="20"/>
@@ -61,7 +65,7 @@
                         </Grid>
                         <TextBlock Text="{Binding Name}" Grid.Column="1">
                             <TextBlock.ToolTip>
-                                <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Vertical" Background="White">
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Owner}"/>
                                         <TextBlock>&#160;</TextBlock>

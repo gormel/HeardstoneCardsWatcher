@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
@@ -13,13 +12,16 @@ namespace CoreLib
 	{
 	    public ObservableCollection<CardInfo> Infos { get; } = new ObservableCollection<CardInfo>();
 
-	    public CardsManager()
+	    private string LogDirectory { get; } = Environment.ExpandEnvironmentVariables(@"%localappdata%\Blizzard\Hearthstone\Logs");
+	    private string ConfigFile { get; } = Environment.ExpandEnvironmentVariables(@"%localappdata%\Blizzard\Hearthstone\log.config");
+
+
+        public CardsManager()
 		{
-		    var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData, Environment.SpecialFolderOption.Create);
-		    var configFile = new FileInfo($@"{localAppData}\Blizzard\Hearthstone\log.config");
-		    if (!configFile.Exists)
+		    var configFileInfo = new FileInfo(ConfigFile);
+		    if (!configFileInfo.Exists)
 		    {
-                using (var stream = configFile.Create())
+                using (var stream = configFileInfo.Create())
                 using (var sw = new StreamWriter(stream))
                 {
                     sw.WriteLine("[Zone]");
@@ -29,12 +31,53 @@ namespace CoreLib
                     sw.WriteLine("ScreenPrinting=false");
                 }
 		    }
-			var mWather = new NormalFileSystemWatcher(@"C:\Games\Hearthstone\Hearthstone_Data\output_log.txt");
-			mWather.FileChanged += mWather_FileChanged;
-			mWather.Exception += mWather_Exception;
+
+            var t = WatcherCreationCycle().ContinueWith(WatcherCreationCycleContination);
 		}
 
-		private void mWather_Exception(Exception e)
+	    private FileInfo GetLastLogFileInfo()
+        {
+            var fikes = Directory.EnumerateFiles(LogDirectory);
+            FileInfo newest = null;
+            foreach (var fike in fikes)
+            {
+                var info = new FileInfo(fike);
+                if (newest == null || info.CreationTime > newest.CreationTime)
+                {
+                    newest = info;
+                }
+            }
+	        return newest;
+        }
+
+	    private async Task WatcherCreationCycle()
+	    {
+	        var info = GetLastLogFileInfo();
+	        if (info == null)
+	            return;
+            
+            var wather = new NormalFileSystemWatcher(info.FullName);
+            wather.FileChanged += mWather_FileChanged;
+            wather.Exception += mWather_Exception;
+
+	        while (true)
+	        {
+	            await Task.Delay(100);
+                if (!info.Exists)
+                    break;
+	        }
+	        wather.FileChanged -= mWather_FileChanged;
+	        wather.Exception -= mWather_Exception;
+	    }
+
+	    private async void WatcherCreationCycleContination(Task t)
+	    {
+	        await Task.Delay(100);
+	        var tt = WatcherCreationCycle().ContinueWith(WatcherCreationCycleContination);
+	    }
+
+
+        private void mWather_Exception(Exception e)
 		{
 			Trace.TraceError(e.Message);
 		}
